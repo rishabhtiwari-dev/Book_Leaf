@@ -21,3 +21,4 @@ export function useRootRedirect() {
     redirectTarget: isAdmin ? '/admin/dashboard' : '/author/books',
   };
 }
+

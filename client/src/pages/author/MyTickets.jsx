@@ -1,13 +1,12 @@
 import React from 'react';
-import { useMyTickets } from './useMyTickets';
-import { MyTicketsView } from './MyTicketsView';
+import { useMyTicketsFunction } from './myTickets.function';
+import { MyTicketsDesign } from './myTickets.design';
 
 /**
- * MyTickets Page Container.
- * Binds functional ticket query and real-time updates from useMyTickets to presentation in MyTicketsView.
+ * Author MyTickets Page Container.
+ * Connects pure functional logic (myTickets.function.js) to pure visual presentation (myTickets.design.jsx).
  */
 export default function MyTickets() {
-  const { tickets, loading, error } = useMyTickets();
-
-  return <MyTicketsView tickets={tickets} loading={loading} error={error} />;
+  const stateAndData = useMyTicketsFunction();
+  return <MyTicketsDesign {...stateAndData} />;
 }

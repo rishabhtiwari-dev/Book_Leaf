@@ -1,31 +1,12 @@
 import React from 'react';
-import { useLogin } from './useLogin';
-import { LoginView } from './LoginView';
+import { useLoginFunction } from './login.function';
+import { LoginDesign } from './login.design';
 
 /**
  * Login Page Container.
- * Binds functional authentication logic from useLogin to presentation in LoginView.
+ * Connects pure functional authentication logic (login.function.js) to pure visual presentation (login.design.jsx).
  */
 export default function Login() {
-  const {
-    email,
-    setEmail,
-    password,
-    setPassword,
-    error,
-    loading,
-    handleSubmit,
-  } = useLogin();
-
-  return (
-    <LoginView
-      email={email}
-      setEmail={setEmail}
-      password={password}
-      setPassword={setPassword}
-      error={error}
-      loading={loading}
-      onSubmit={handleSubmit}
-    />
-  );
+  const stateAndHandlers = useLoginFunction();
+  return <LoginDesign {...stateAndHandlers} />;
 }

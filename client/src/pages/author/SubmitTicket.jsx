@@ -1,45 +1,12 @@
 import React from 'react';
-import { useSubmitTicket } from './useSubmitTicket';
-import { SubmitTicketView } from './SubmitTicketView';
+import { useSubmitTicketFunction } from './submitTicket.function';
+import { SubmitTicketDesign } from './submitTicket.design';
 
 /**
- * SubmitTicket Page Container.
- * Binds functional form validation and ticket creation from useSubmitTicket to presentation in SubmitTicketView.
+ * Author SubmitTicket Page Container.
+ * Connects pure functional logic (submitTicket.function.js) to pure visual presentation (submitTicket.design.jsx).
  */
 export default function SubmitTicket() {
-  const {
-    books,
-    loadingBooks,
-    submitting,
-    bookId,
-    setBookId,
-    subject,
-    handleSubjectChange,
-    description,
-    handleDescriptionChange,
-    fileName,
-    handleFileChange,
-    errors,
-    handleSubmit,
-    handleCancel,
-  } = useSubmitTicket();
-
-  return (
-    <SubmitTicketView
-      books={books}
-      loadingBooks={loadingBooks}
-      submitting={submitting}
-      bookId={bookId}
-      setBookId={setBookId}
-      subject={subject}
-      onSubjectChange={handleSubjectChange}
-      description={description}
-      onDescriptionChange={handleDescriptionChange}
-      fileName={fileName}
-      onFileChange={handleFileChange}
-      errors={errors}
-      onSubmit={handleSubmit}
-      onCancel={handleCancel}
-    />
-  );
+  const stateAndHandlers = useSubmitTicketFunction();
+  return <SubmitTicketDesign {...stateAndHandlers} />;
 }

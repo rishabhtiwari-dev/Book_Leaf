@@ -24,3 +24,4 @@ export function useProtectedRoute(requiredRole) {
 
   return { loading: false, shouldRedirect: false, redirectPath: '' };
 }
+

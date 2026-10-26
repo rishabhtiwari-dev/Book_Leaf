@@ -1,0 +1,40 @@
+/* ==========================================================================
+   Author My Books Design Stylesheet
+   ========================================================================== */
+
+.author-books-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.author-books-header {
+  margin-bottom: 0.5rem;
+}
+
+.author-books-table-wrapper {
+  overflow-x: auto;
+  padding: 0 !important;
+}
+
+.author-books-mobile-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .author-books-mobile-cards {
+    display: none;
+  }
+}
+
+.author-books-desktop-table {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .author-books-desktop-table {
+    display: block;
+  }
+}

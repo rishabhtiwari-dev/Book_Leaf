@@ -1,31 +1,17 @@
 import React from 'react';
-import { useLayout } from './useLayout';
-import { LayoutView } from './LayoutView';
+import { useLayoutFunction } from './useLayout';
+import { LayoutDesign } from './layout.design';
 
 /**
  * Layout Container Component.
- * Binds functional logic from useLayout to visual shell in LayoutView.
+ * Connects pure functional logic (useLayout.js) to pure visual presentation (layout.design.jsx).
  */
 export default function Layout({ children }) {
-  const {
-    user,
-    isAdmin,
-    sidebarOpen,
-    handleLogout,
-    closeSidebar,
-    openSidebar,
-  } = useLayout();
+  const layoutState = useLayoutFunction();
 
   return (
-    <LayoutView
-      user={user}
-      isAdmin={isAdmin}
-      sidebarOpen={sidebarOpen}
-      onLogout={handleLogout}
-      onCloseSidebar={closeSidebar}
-      onOpenSidebar={openSidebar}
-    >
+    <LayoutDesign {...layoutState}>
       {children}
-    </LayoutView>
+    </LayoutDesign>
   );
 }

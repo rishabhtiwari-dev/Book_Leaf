@@ -1,43 +1,12 @@
 import React from 'react';
-import { useTicketQueue } from './useTicketQueue';
-import { TicketQueueView } from './TicketQueueView';
+import { useTicketQueueFunction } from './ticketQueue.function';
+import { TicketQueueDesign } from './ticketQueue.design';
 
 /**
- * Admin TicketQueue Page Container.
- * Binds functional filtering, sorting, and real-time socket events from useTicketQueue to TicketQueueView.
+ * Operations Admin TicketQueue Page Container.
+ * Connects pure functional logic (ticketQueue.function.js) to pure visual presentation (ticketQueue.design.jsx).
  */
 export default function TicketQueue() {
-  const {
-    tickets,
-    loading,
-    error,
-    status,
-    setStatus,
-    category,
-    setCategory,
-    priority,
-    setPriority,
-    search,
-    setSearch,
-    handleSearchKeyDown,
-    triggerSearch,
-  } = useTicketQueue();
-
-  return (
-    <TicketQueueView
-      tickets={tickets}
-      loading={loading}
-      error={error}
-      status={status}
-      setStatus={setStatus}
-      category={category}
-      setCategory={setCategory}
-      priority={priority}
-      setPriority={setPriority}
-      search={search}
-      setSearch={setSearch}
-      onSearchKeyDown={handleSearchKeyDown}
-      onSearchClick={triggerSearch}
-    />
-  );
+  const stateAndHandlers = useTicketQueueFunction();
+  return <TicketQueueDesign {...stateAndHandlers} />;
 }

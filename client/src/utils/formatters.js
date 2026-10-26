@@ -71,3 +71,4 @@ export function formatRelativeTime(date) {
     return '';
   }
 }
+

@@ -1,13 +1,12 @@
 import React from 'react';
-import { useAuthorTicketDetail } from './useAuthorTicketDetail';
-import { AuthorTicketDetailView } from './AuthorTicketDetailView';
+import { useAuthorTicketDetailFunction } from './ticketDetail.function';
+import { TicketDetailDesign } from './ticketDetail.design';
 
 /**
  * Author TicketDetail Page Container.
- * Binds functional ticket detail fetching and real-time socket events to AuthorTicketDetailView.
+ * Connects pure functional logic (ticketDetail.function.js) to pure visual presentation (ticketDetail.design.jsx).
  */
 export default function TicketDetail() {
-  const { ticket, loading, error } = useAuthorTicketDetail();
-
-  return <AuthorTicketDetailView ticket={ticket} loading={loading} error={error} />;
+  const { ticket, loading, error } = useAuthorTicketDetailFunction();
+  return <TicketDetailDesign ticket={ticket} loading={loading} error={error} />;
 }

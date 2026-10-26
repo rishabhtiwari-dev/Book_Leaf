@@ -1,13 +1,12 @@
 import React from 'react';
-import { useMyBooks } from './useMyBooks';
-import { MyBooksView } from './MyBooksView';
+import { useMyBooksFunction } from './myBooks.function';
+import { MyBooksDesign } from './myBooks.design';
 
 /**
- * MyBooks Page Container.
- * Binds functional catalog fetching from useMyBooks to presentation in MyBooksView.
+ * Author MyBooks Page Container.
+ * Connects pure functional logic (myBooks.function.js) to pure visual presentation (myBooks.design.jsx).
  */
 export default function MyBooks() {
-  const { books, loading, error } = useMyBooks();
-
-  return <MyBooksView books={books} loading={loading} error={error} />;
+  const stateAndData = useMyBooksFunction();
+  return <MyBooksDesign {...stateAndData} />;
 }

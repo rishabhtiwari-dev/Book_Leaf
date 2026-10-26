@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 /**
- * Pure Functional Hook: Layout State & Handlers
- * Manages sidebar open/close state, authentication session, and navigation handlers.
+ * Pure Functional Controller: Layout State & Handlers
+ * Manages sidebar open/close state, authentication session, user initials, badge styles, and navigation handlers.
  */
-export function useLayout() {
+export function useLayoutFunction() {
   const { user, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -19,12 +19,21 @@ export function useLayout() {
   const closeSidebar = () => setSidebarOpen(false);
   const openSidebar = () => setSidebarOpen(true);
 
+  const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : 'U';
+  const roleBadgeClass = isAdmin
+    ? 'bg-purple-100 text-purple-700'
+    : 'bg-emerald-100 text-emerald-700';
+
   return {
     user,
+    userInitial,
+    roleBadgeClass,
     isAdmin,
     sidebarOpen,
-    handleLogout,
-    closeSidebar,
-    openSidebar,
+    onLogout: handleLogout,
+    onCloseSidebar: closeSidebar,
+    onOpenSidebar: openSidebar,
   };
 }
+
+export { useLayoutFunction as useLayout };

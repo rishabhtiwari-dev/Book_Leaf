@@ -1,27 +1,12 @@
 import React from 'react';
-import { useDashboard } from './useDashboard';
-import { DashboardView } from './DashboardView';
+import { useDashboardFunction } from './dashboard.function';
+import { DashboardDesign } from './dashboard.design';
 
 /**
- * Admin Dashboard Page Container.
- * Binds functional metrics from useDashboard to visual layout in DashboardView.
+ * Operations Admin Dashboard Container.
+ * Connects pure functional logic (dashboard.function.js) to pure visual presentation (dashboard.design.jsx).
  */
 export default function Dashboard() {
-  const {
-    loading,
-    error,
-    counts,
-    categoryBreakdown,
-    priorityBreakdown,
-  } = useDashboard();
-
-  return (
-    <DashboardView
-      loading={loading}
-      error={error}
-      counts={counts}
-      categoryBreakdown={categoryBreakdown}
-      priorityBreakdown={priorityBreakdown}
-    />
-  );
+  const stateAndData = useDashboardFunction();
+  return <DashboardDesign {...stateAndData} />;
 }
