@@ -2,11 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { StatusBadge, PriorityBadge, CategoryBadge } from '../../components/Badges';
 import { Loader2, AlertCircle, Search, Filter, Ticket } from 'lucide-react';
-import { format } from 'date-fns';
 import { STATUS_OPTIONS, CATEGORY_OPTIONS, PRIORITY_OPTIONS } from './useTicketQueue';
 
 /**
- * Pure presentation / design component for Operations Ticket Queue table and filter bar.
+ * Pure Visual Design Component: Operations Admin Ticket Queue Table & Filters.
  */
 export function TicketQueueView({
   tickets,
@@ -126,70 +125,67 @@ export function TicketQueueView({
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {tickets.map((t) => {
-                const isCritical = t.priority === 'CRITICAL';
-                return (
-                  <tr
-                    key={t.id}
-                    className={`hover:bg-gray-50/80 transition-colors cursor-pointer ${
-                      isCritical ? 'bg-red-50/30 border-l-4 border-l-red-500' : ''
-                    }`}
-                  >
-                    <td className="py-3 px-4">
-                      <Link
-                        to={`/admin/tickets/${t.id}`}
-                        className="font-mono text-xs font-bold text-emerald-700 hover:underline"
-                      >
-                        {t.ticketNumber || `TKT-${String(t.id).padStart(4, '0')}`}
-                      </Link>
-                    </td>
-                    <td className="py-3 px-4 max-w-xs">
-                      <Link
-                        to={`/admin/tickets/${t.id}`}
-                        className="font-medium text-gray-900 hover:text-emerald-700 block truncate"
-                        title={t.subject}
-                      >
-                        {t.subject}
-                      </Link>
-                      {t._count?.responses > 0 && (
-                        <span className="text-[10px] text-gray-400">
-                          {t._count.responses} response{t._count.responses > 1 ? 's' : ''}
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-3 px-4 text-gray-700">
-                      <div className="font-medium">{t.author?.name || 'Unknown'}</div>
-                      <div className="text-[11px] text-gray-400 truncate max-w-[120px]">
-                        {t.author?.email}
-                      </div>
-                    </td>
-                    <td className="py-3 px-4 text-gray-600 max-w-[150px] truncate">
-                      {t.book ? t.book.title : <span className="text-gray-400">General</span>}
-                    </td>
-                    <td className="py-3 px-4">
-                      <CategoryBadge category={t.category} />
-                    </td>
-                    <td className="py-3 px-4">
-                      <PriorityBadge priority={t.priority} />
-                    </td>
-                    <td className="py-3 px-4">
-                      <StatusBadge status={t.status} />
-                    </td>
-                    <td className="py-3 px-4 text-gray-500 text-xs whitespace-nowrap">
-                      {t.createdAt ? format(new Date(t.createdAt), 'MMM d, h:mm a') : '—'}
-                    </td>
-                    <td className="py-3 px-4 text-gray-600 text-xs">
-                      {t.assignedTo ? (
-                        <span className="inline-flex items-center gap-1 font-medium text-gray-700">
-                          👤 {t.assignedTo.name}
-                        </span>
-                      ) : (
-                        <span className="text-gray-400 italic">Unassigned</span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
+              {tickets.map((t) => (
+                <tr
+                  key={t.id}
+                  className={`hover:bg-gray-50/80 transition-colors cursor-pointer ${
+                    t.isCritical ? 'bg-red-50/30 border-l-4 border-l-red-500' : ''
+                  }`}
+                >
+                  <td className="py-3 px-4">
+                    <Link
+                      to={`/admin/tickets/${t.id}`}
+                      className="font-mono text-xs font-bold text-emerald-700 hover:underline"
+                    >
+                      {t.formattedTicketNumber}
+                    </Link>
+                  </td>
+                  <td className="py-3 px-4 max-w-xs">
+                    <Link
+                      to={`/admin/tickets/${t.id}`}
+                      className="font-medium text-gray-900 hover:text-emerald-700 block truncate"
+                      title={t.subject}
+                    >
+                      {t.subject}
+                    </Link>
+                    {t.responsesText && (
+                      <span className="text-[10px] text-gray-400">
+                        {t.responsesText}
+                      </span>
+                    )}
+                  </td>
+                  <td className="py-3 px-4 text-gray-700">
+                    <div className="font-semibold">{t.author?.name || 'Unknown'}</div>
+                    <div className="text-[11px] text-gray-400 truncate max-w-[120px]">
+                      {t.author?.email}
+                    </div>
+                  </td>
+                  <td className="py-3 px-4 text-gray-600 max-w-[150px] truncate">
+                    {t.book ? t.book.title : <span className="text-gray-400">General</span>}
+                  </td>
+                  <td className="py-3 px-4">
+                    <CategoryBadge category={t.category} />
+                  </td>
+                  <td className="py-3 px-4">
+                    <PriorityBadge priority={t.priority} />
+                  </td>
+                  <td className="py-3 px-4">
+                    <StatusBadge status={t.status} />
+                  </td>
+                  <td className="py-3 px-4 text-gray-500 text-xs whitespace-nowrap">
+                    {t.formattedDate || '—'}
+                  </td>
+                  <td className="py-3 px-4 text-gray-600 text-xs">
+                    {t.assignedTo ? (
+                      <span className="inline-flex items-center gap-1 font-medium text-gray-700">
+                        👤 {t.assignedTo.name}
+                      </span>
+                    ) : (
+                      <span className="text-gray-400 italic">Unassigned</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

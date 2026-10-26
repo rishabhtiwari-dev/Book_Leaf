@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getAdminTickets } from '../../api/client';
 import { useSocket } from '../../context/SocketContext';
+import { formatTicketNumber, formatDate } from '../../utils/formatters';
 import toast from 'react-hot-toast';
 
 export const STATUS_OPTIONS = ['', 'OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED'];
@@ -15,8 +16,22 @@ export const CATEGORY_OPTIONS = [
 ];
 export const PRIORITY_OPTIONS = ['', 'CRITICAL', 'HIGH', 'MEDIUM', 'LOW'];
 
+function processQueueTicket(t) {
+  const responsesCount = t._count?.responses ?? 0;
+  return {
+    ...t,
+    formattedTicketNumber: formatTicketNumber(t),
+    formattedDate: formatDate(t.createdAt, 'MMM d, h:mm a'),
+    responsesText:
+      responsesCount > 0
+        ? `${responsesCount} response${responsesCount > 1 ? 's' : ''}`
+        : null,
+    isCritical: t.priority === 'CRITICAL',
+  };
+}
+
 /**
- * Custom hook managing operations ticket queue filtering, priority sorting, and real-time events.
+ * Pure Functional Hook: Operations Queue State, Filtering, and Sorting Logic.
  */
 export function useTicketQueue() {
   const [tickets, setTickets] = useState([]);
@@ -40,7 +55,6 @@ export function useTicketQueue() {
     getAdminTickets(filters)
       .then((data) => {
         let list = data.tickets || [];
-        // Sort: critical first, then oldest unresolved first
         const priorityOrder = { CRITICAL: 0, HIGH: 1, MEDIUM: 2, LOW: 3 };
         list.sort((a, b) => {
           const pA = priorityOrder[a.priority] ?? 4;
@@ -48,7 +62,7 @@ export function useTicketQueue() {
           if (pA !== pB) return pA - pB;
           return new Date(a.createdAt) - new Date(b.createdAt);
         });
-        setTickets(list);
+        setTickets(list.map(processQueueTicket));
       })
       .catch((err) => setError(err.response?.data?.message || 'Failed to load tickets'))
       .finally(() => setLoading(false));

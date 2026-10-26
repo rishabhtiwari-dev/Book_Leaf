@@ -4,14 +4,13 @@ import { LayoutView } from './LayoutView';
 
 /**
  * Layout Container Component.
- * Binds functional business logic from useLayout to presentation in LayoutView.
+ * Binds functional logic from useLayout to visual shell in LayoutView.
  */
 export default function Layout({ children }) {
   const {
     user,
     isAdmin,
     sidebarOpen,
-    links,
     handleLogout,
     closeSidebar,
     openSidebar,
@@ -22,7 +21,6 @@ export default function Layout({ children }) {
       user={user}
       isAdmin={isAdmin}
       sidebarOpen={sidebarOpen}
-      links={links}
       onLogout={handleLogout}
       onCloseSidebar={closeSidebar}
       onOpenSidebar={openSidebar}

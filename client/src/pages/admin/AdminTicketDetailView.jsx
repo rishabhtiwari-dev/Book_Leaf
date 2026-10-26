@@ -4,7 +4,6 @@ import {
   StatusBadge,
   PriorityBadge,
   CategoryBadge,
-  formatCurrency,
 } from '../../components/Badges';
 import {
   Loader2,
@@ -18,17 +17,15 @@ import {
   UserCheck,
   Save,
 } from 'lucide-react';
-import { format } from 'date-fns';
 import { STATUS_OPTIONS, CATEGORY_OPTIONS, PRIORITY_OPTIONS } from './useAdminTicketDetail';
 
 /**
- * Pure presentation / design component for Operations Admin Ticket Detail view.
+ * Pure Visual Design Component: Operations Admin Ticket Detail & Triage Layout.
  */
 export function AdminTicketDetailView({
   ticket,
   loading,
   error,
-  user,
   editStatus,
   setEditStatus,
   editCategory,
@@ -69,12 +66,10 @@ export function AdminTicketDetailView({
     );
   }
 
-  const responses = ticket.responses || [];
-  const notes = ticket.internalNotes || [];
+  const responses = ticket.formattedResponses || [];
+  const notes = ticket.formattedNotes || [];
   const authorInfo = ticket.author;
-  const ticketNumber =
-    ticket.ticketNumber || `TKT-${String(ticket.id).padStart(4, '0')}`;
-  const isAssignedToCurrent = ticket.assignedToId === user?.id;
+  const bookInfo = ticket.formattedBook;
 
   return (
     <div>
@@ -96,17 +91,16 @@ export function AdminTicketDetailView({
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-sm font-mono text-gray-400 font-bold">{ticketNumber}</span>
+                  <span className="text-sm font-mono text-gray-400 font-bold">
+                    {ticket.formattedTicketNumber}
+                  </span>
                   <StatusBadge status={ticket.status} />
                   <PriorityBadge priority={ticket.priority} />
                   <CategoryBadge category={ticket.category} />
                 </div>
                 <h1 className="text-xl font-bold text-gray-900">{ticket.subject}</h1>
                 <p className="text-xs text-gray-400 mt-1">
-                  Submitted{' '}
-                  {ticket.createdAt
-                    ? format(new Date(ticket.createdAt), 'MMM d, yyyy h:mm a')
-                    : ''}
+                  Submitted {ticket.formattedDate}
                 </p>
               </div>
             </div>
@@ -119,7 +113,7 @@ export function AdminTicketDetailView({
                     <User className="h-4 w-4 text-emerald-700" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{authorInfo.name}</p>
+                    <p className="text-sm font-semibold text-gray-900">{authorInfo.name}</p>
                     <p className="text-xs text-gray-500">{authorInfo.email}</p>
                     {authorInfo.city && (
                       <p className="text-xs text-gray-400">City: {authorInfo.city}</p>
@@ -130,39 +124,39 @@ export function AdminTicketDetailView({
             )}
 
             {/* Book info */}
-            {ticket.book && (
+            {bookInfo && (
               <div className="mt-4 pt-4 border-t border-gray-100">
                 <div className="flex items-center gap-2 text-sm mb-2">
                   <BookOpen className="h-4 w-4 text-gray-400" />
-                  <span className="font-medium text-gray-700">Related Book</span>
+                  <span className="font-semibold text-gray-700">Related Book</span>
                 </div>
                 <div className="bg-gray-50 rounded-lg px-4 py-3 text-sm space-y-1">
                   <p>
                     <span className="text-gray-500">Title:</span>{' '}
-                    <span className="font-medium text-gray-900">{ticket.book.title}</span>
+                    <span className="font-semibold text-gray-900">{bookInfo.title}</span>
                   </p>
-                  {ticket.book.isbn && (
+                  {bookInfo.isbn && (
                     <p>
                       <span className="text-gray-500">ISBN:</span>{' '}
-                      <span className="font-mono text-xs text-gray-700">{ticket.book.isbn}</span>
+                      <span className="font-mono text-xs text-gray-700">{bookInfo.isbn}</span>
                     </p>
                   )}
-                  {ticket.book.status && (
+                  {bookInfo.status && (
                     <p>
                       <span className="text-gray-500">Status:</span>{' '}
-                      <span className="text-gray-700">{ticket.book.status}</span>
+                      <span className="text-gray-700">{bookInfo.status}</span>
                     </p>
                   )}
-                  {ticket.book.totalRoyaltyEarned != null && (
+                  {bookInfo.formattedRoyaltyEarned && (
                     <p>
                       <span className="text-gray-500">Total Royalty Earned:</span>{' '}
-                      <span className="text-gray-700 font-medium">{formatCurrency(ticket.book.totalRoyaltyEarned)}</span>
+                      <span className="text-gray-700 font-medium">{bookInfo.formattedRoyaltyEarned}</span>
                     </p>
                   )}
-                  {ticket.book.royaltyPending != null && (
+                  {bookInfo.formattedRoyaltyPending && (
                     <p>
                       <span className="text-gray-500">Royalty Pending:</span>{' '}
-                      <span className="text-gray-700 font-medium text-amber-700">{formatCurrency(ticket.book.royaltyPending)}</span>
+                      <span className="text-amber-700 font-semibold">{bookInfo.formattedRoyaltyPending}</span>
                     </p>
                   )}
                 </div>
@@ -171,7 +165,7 @@ export function AdminTicketDetailView({
 
             {/* Description */}
             <div className="mt-4 pt-4 border-t border-gray-100">
-              <h3 className="text-sm font-medium text-gray-700 mb-2">Original Query</h3>
+              <h3 className="text-sm font-semibold text-gray-700 mb-2">Original Query</h3>
               <p className="text-gray-700 whitespace-pre-wrap text-sm leading-relaxed bg-gray-50/60 p-3 rounded-lg border border-gray-100">
                 {ticket.description}
               </p>
@@ -197,13 +191,11 @@ export function AdminTicketDetailView({
                         <User className="h-3.5 w-3.5 text-emerald-700" />
                       </div>
                       <div>
-                        <span className="text-sm font-medium text-gray-900">
+                        <span className="text-sm font-semibold text-gray-900">
                           {resp.user?.name || 'Support Team'}
                         </span>
                         <span className="text-xs text-gray-400 ml-2">
-                          {resp.createdAt
-                            ? format(new Date(resp.createdAt), 'MMM d, yyyy h:mm a')
-                            : ''}
+                          {resp.formattedDate}
                         </span>
                       </div>
                     </div>
@@ -297,7 +289,7 @@ export function AdminTicketDetailView({
                   )}
                   Save Changes
                 </button>
-                {!isAssignedToCurrent && (
+                {!ticket.isAssignedToCurrent && (
                   <button
                     onClick={onAssignToMe}
                     className="btn-secondary flex items-center gap-1.5 text-xs"
@@ -381,7 +373,7 @@ export function AdminTicketDetailView({
                     <p className="whitespace-pre-wrap">{n.content}</p>
                     <div className="flex items-center justify-between text-[10px] text-amber-600 mt-1.5 pt-1 border-t border-amber-200/50">
                       <span>{n.user?.name || 'Staff'}</span>
-                      <span>{n.createdAt ? format(new Date(n.createdAt), 'MMM d, h:mm a') : ''}</span>
+                      <span>{n.formattedDate}</span>
                     </div>
                   </div>
                 ))}

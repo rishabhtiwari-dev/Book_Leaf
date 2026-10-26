@@ -1,25 +1,21 @@
+import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { Loader2 } from 'lucide-react';
+import { useProtectedRoute } from './useProtectedRoute';
+import { LoadingScreen } from './LoadingScreen';
 
+/**
+ * Route Guard Component.
+ * Binds functional protection logic from useProtectedRoute to visual LoadingScreen / route redirect.
+ */
 export default function ProtectedRoute({ children, role }) {
-  const { isAuthenticated, loading, user } = useAuth();
+  const { loading, shouldRedirect, redirectPath } = useProtectedRoute(role);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-
-  if (role && user?.role !== role) {
-    const fallback = user?.role === 'ADMIN' ? '/admin/dashboard' : '/author/books';
-    return <Navigate to={fallback} replace />;
+  if (shouldRedirect) {
+    return <Navigate to={redirectPath} replace />;
   }
 
   return children;

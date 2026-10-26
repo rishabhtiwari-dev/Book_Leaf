@@ -1,14 +1,23 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Loader2, AlertCircle, ArrowRight } from 'lucide-react';
+import {
+  Ticket,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  Inbox,
+  Loader2,
+  AlertCircle,
+  ArrowRight,
+} from 'lucide-react';
 
 /**
- * Pure presentation / design component for Operations Admin Dashboard.
+ * Pure Visual Design Component: Operations Admin Analytics Dashboard.
  */
 export function DashboardView({
   loading,
   error,
-  summaryCards,
+  counts,
   categoryBreakdown,
   priorityBreakdown,
 }) {
@@ -31,6 +40,51 @@ export function DashboardView({
     );
   }
 
+  const metricCards = [
+    {
+      label: 'Total Tickets',
+      value: counts.total,
+      icon: Ticket,
+      color: 'bg-gray-100 text-gray-700',
+      iconColor: 'text-gray-500',
+    },
+    {
+      label: 'Open',
+      value: counts.open,
+      icon: Inbox,
+      color: 'bg-blue-50 text-blue-700',
+      iconColor: 'text-blue-500',
+    },
+    {
+      label: 'In Progress',
+      value: counts.inProgress,
+      icon: Clock,
+      color: 'bg-amber-50 text-amber-700',
+      iconColor: 'text-amber-500',
+    },
+    {
+      label: 'Resolved',
+      value: counts.resolved,
+      icon: CheckCircle2,
+      color: 'bg-green-50 text-green-700',
+      iconColor: 'text-green-500',
+    },
+    {
+      label: 'Closed',
+      value: counts.closed,
+      icon: XCircle,
+      color: 'bg-gray-50 text-gray-500',
+      iconColor: 'text-gray-400',
+    },
+  ];
+
+  const priorityStyles = {
+    CRITICAL: 'text-red-700 bg-red-50 border border-red-200',
+    HIGH: 'text-orange-700 bg-orange-50 border border-orange-200',
+    MEDIUM: 'text-yellow-700 bg-yellow-50 border border-yellow-200',
+    LOW: 'text-emerald-700 bg-emerald-50 border border-emerald-200',
+  };
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -46,7 +100,7 @@ export function DashboardView({
 
       {/* Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
-        {summaryCards.map((card) => (
+        {metricCards.map((card) => (
           <div key={card.label} className="card flex items-center gap-3">
             <div className={`flex items-center justify-center w-10 h-10 rounded-lg ${card.color}`}>
               <card.icon className={`h-5 w-5 ${card.iconColor}`} />
@@ -66,21 +120,19 @@ export function DashboardView({
           <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-4">
             Tickets by Category
           </h3>
-          {Array.isArray(categoryBreakdown) && categoryBreakdown.length > 0 ? (
+          {categoryBreakdown.length > 0 ? (
             <div className="space-y-3">
-              {categoryBreakdown.map((item) => {
-                const displayName =
-                  item.name || item.category?.replace(/_/g, ' ') || 'General Inquiry';
-                const count = item.count ?? 0;
-                return (
-                  <div key={item.category || item.name} className="flex items-center justify-between py-1 border-b border-gray-50 last:border-0">
-                    <span className="text-sm text-gray-700">{displayName}</span>
-                    <span className="text-sm font-semibold text-gray-900 bg-gray-100 px-2 py-0.5 rounded-full">
-                      {count}
-                    </span>
-                  </div>
-                );
-              })}
+              {categoryBreakdown.map((item) => (
+                <div
+                  key={item.category || item.name}
+                  className="flex items-center justify-between py-1 border-b border-gray-50 last:border-0"
+                >
+                  <span className="text-sm text-gray-700">{item.name || item.category}</span>
+                  <span className="text-sm font-semibold text-gray-900 bg-gray-100 px-2.5 py-0.5 rounded-full">
+                    {item.count ?? 0}
+                  </span>
+                </div>
+              ))}
             </div>
           ) : (
             <p className="text-sm text-gray-400">No data available</p>
@@ -92,25 +144,22 @@ export function DashboardView({
           <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-4">
             Tickets by Priority
           </h3>
-          {Array.isArray(priorityBreakdown) && priorityBreakdown.length > 0 ? (
+          {priorityBreakdown.length > 0 ? (
             <div className="space-y-3">
               {priorityBreakdown.map((item) => {
                 const pri = item.priority || 'MEDIUM';
                 const count = item.count ?? 0;
-                const colors = {
-                  CRITICAL: 'text-red-700 bg-red-50 border border-red-200',
-                  HIGH: 'text-orange-700 bg-orange-50 border border-orange-200',
-                  MEDIUM: 'text-yellow-700 bg-yellow-50 border border-yellow-200',
-                  LOW: 'text-emerald-700 bg-emerald-50 border border-emerald-200',
-                };
                 return (
-                  <div key={pri} className="flex items-center justify-between py-1 border-b border-gray-50 last:border-0">
+                  <div
+                    key={pri}
+                    className="flex items-center justify-between py-1 border-b border-gray-50 last:border-0"
+                  >
                     <span className="text-sm font-medium capitalize text-gray-700">
                       {pri.toLowerCase()}
                     </span>
                     <span
                       className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
-                        colors[pri] || 'bg-gray-100 text-gray-700'
+                        priorityStyles[pri] || 'bg-gray-100 text-gray-700'
                       }`}
                     >
                       {count}

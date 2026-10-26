@@ -2,9 +2,23 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getTicket } from '../../api/client';
 import { useSocket } from '../../context/SocketContext';
+import { formatTicketNumber, formatRelativeTime } from '../../utils/formatters';
+
+function processDetailTicket(t) {
+  if (!t) return null;
+  return {
+    ...t,
+    formattedTicketNumber: formatTicketNumber(t),
+    formattedRelativeTime: formatRelativeTime(t.createdAt),
+    responses: (t.responses || []).map((resp) => ({
+      ...resp,
+      formattedTime: formatRelativeTime(resp.createdAt),
+    })),
+  };
+}
 
 /**
- * Custom hook managing individual ticket view data and real-time response synchronization for author.
+ * Pure Functional Hook: Author Ticket Detail Fetching & Synchronization.
  */
 export function useAuthorTicketDetail() {
   const { id } = useParams();
@@ -15,7 +29,7 @@ export function useAuthorTicketDetail() {
 
   const fetchTicket = () => {
     getTicket(id)
-      .then((data) => setTicket(data.ticket))
+      .then((data) => setTicket(processDetailTicket(data.ticket)))
       .catch((err) => setError(err.response?.data?.message || 'Failed to load ticket'))
       .finally(() => setLoading(false));
   };

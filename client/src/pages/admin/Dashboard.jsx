@@ -4,13 +4,13 @@ import { DashboardView } from './DashboardView';
 
 /**
  * Admin Dashboard Page Container.
- * Binds functional metrics fetching and analytics calculation from useDashboard to presentation in DashboardView.
+ * Binds functional metrics from useDashboard to visual layout in DashboardView.
  */
 export default function Dashboard() {
   const {
     loading,
     error,
-    summaryCards,
+    counts,
     categoryBreakdown,
     priorityBreakdown,
   } = useDashboard();
@@ -19,7 +19,7 @@ export default function Dashboard() {
     <DashboardView
       loading={loading}
       error={error}
-      summaryCards={summaryCards}
+      counts={counts}
       categoryBreakdown={categoryBreakdown}
       priorityBreakdown={priorityBreakdown}
     />

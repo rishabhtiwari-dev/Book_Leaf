@@ -1,9 +1,8 @@
 import React from 'react';
-import { formatCurrency } from '../../components/Badges';
 import { BookOpen, Loader2, AlertCircle, Globe } from 'lucide-react';
 
 /**
- * Pure presentation / design component for Author My Books page.
+ * Pure Visual Design Component: Author Book Catalog Table and Responsive Cards.
  */
 export function MyBooksView({ books, loading, error }) {
   if (loading) {
@@ -35,169 +34,133 @@ export function MyBooksView({ books, loading, error }) {
       {books.length === 0 ? (
         <div className="card text-center py-12">
           <BookOpen className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-          <p className="text-gray-500">No books found.</p>
+          <p className="text-gray-500">No books found in your catalog.</p>
         </div>
       ) : (
         <>
-          {/* Desktop table */}
-          <div className="hidden lg:block card overflow-x-auto">
+          {/* Desktop Table */}
+          <div className="hidden lg:block card overflow-x-auto p-0">
             <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-200 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                  <th className="pb-3 pr-4">Title</th>
-                  <th className="pb-3 pr-4">ISBN</th>
-                  <th className="pb-3 pr-4">Genre</th>
-                  <th className="pb-3 pr-4">Status</th>
-                  <th className="pb-3 pr-4">MRP</th>
-                  <th className="pb-3 pr-4">Copies Sold</th>
-                  <th className="pb-3 pr-4">Royalty Earned</th>
-                  <th className="pb-3 pr-4">Royalty Paid</th>
-                  <th className="pb-3">Pending</th>
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="py-3 px-4">Title</th>
+                  <th className="py-3 px-4">ISBN</th>
+                  <th className="py-3 px-4">Genre</th>
+                  <th className="py-3 px-4">Status</th>
+                  <th className="py-3 px-4">MRP</th>
+                  <th className="py-3 px-4">Copies Sold</th>
+                  <th className="py-3 px-4">Royalty Earned</th>
+                  <th className="py-3 px-4">Royalty Paid</th>
+                  <th className="py-3 px-4">Pending</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {books.map((book) => {
-                  const inProduction =
-                    book.status?.toLowerCase().includes('in production') ||
-                    book.status === 'IN_PRODUCTION' ||
-                    book.status === 'DRAFT' ||
-                    book.mrp == null;
-                  const platforms = book.availableOn || book.platforms || [];
-                  return (
-                    <tr key={book.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="py-3 pr-4">
-                        <div className="font-medium text-gray-900">{book.title}</div>
-                        {platforms.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {platforms.map((p) => (
-                              <span
-                                key={p}
-                                className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded text-[10px] font-medium"
-                              >
-                                <Globe className="h-2.5 w-2.5" />
-                                {p}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </td>
-                      <td className="py-3 pr-4 text-gray-600 font-mono text-xs">{book.isbn || '—'}</td>
-                      <td className="py-3 pr-4 text-gray-600">{book.genre || '—'}</td>
-                      <td className="py-3 pr-4">
-                        {inProduction ? (
-                          <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
-                            {book.status || 'In Production'}
-                          </span>
-                        ) : (
-                          <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                            {book.status || 'Published & Live'}
-                          </span>
-                        )}
-                      </td>
-                      <td className="py-3 pr-4 text-gray-700">{inProduction ? '—' : formatCurrency(book.mrp)}</td>
-                      <td className="py-3 pr-4 text-gray-700">
-                        {inProduction ? '—' : (book.totalCopiesSold ?? 0).toLocaleString('en-IN')}
-                      </td>
-                      <td className="py-3 pr-4 text-gray-700">
-                        {inProduction ? '—' : formatCurrency(book.totalRoyaltyEarned)}
-                      </td>
-                      <td className="py-3 pr-4 text-gray-700">
-                        {inProduction ? '—' : formatCurrency(book.royaltyPaid)}
-                      </td>
-                      <td className="py-3 text-gray-700 font-medium">
-                        {inProduction
-                          ? '—'
-                          : formatCurrency(
-                              book.royaltyPending ??
-                                (book.totalRoyaltyEarned || 0) - (book.royaltyPaid || 0)
-                            )}
-                      </td>
-                    </tr>
-                  );
-                })}
+                {books.map((book) => (
+                  <tr key={book.id} className="hover:bg-gray-50/80 transition-colors">
+                    <td className="py-3 px-4">
+                      <div className="font-semibold text-gray-900">{book.title}</div>
+                      {book.platforms.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {book.platforms.map((p) => (
+                            <span
+                              key={p}
+                              className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded text-[10px] font-medium"
+                            >
+                              <Globe className="h-2.5 w-2.5 text-gray-400" />
+                              {p}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </td>
+                    <td className="py-3 px-4 text-gray-600 font-mono text-xs">{book.isbn}</td>
+                    <td className="py-3 px-4 text-gray-600">{book.genre}</td>
+                    <td className="py-3 px-4">
+                      <span
+                        className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${
+                          book.inProduction
+                            ? 'bg-amber-100 text-amber-700 border border-amber-200'
+                            : 'bg-green-100 text-green-700 border border-green-200'
+                        }`}
+                      >
+                        {book.statusLabel}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 text-gray-700">{book.displayMrp}</td>
+                    <td className="py-3 px-4 text-gray-700">{book.displayCopiesSold}</td>
+                    <td className="py-3 px-4 text-gray-700">{book.displayRoyaltyEarned}</td>
+                    <td className="py-3 px-4 text-gray-700">{book.displayRoyaltyPaid}</td>
+                    <td className="py-3 px-4 text-gray-900 font-semibold">{book.displayRoyaltyPending}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
 
-          {/* Mobile cards */}
+          {/* Mobile Cards */}
           <div className="lg:hidden space-y-4">
-            {books.map((book) => {
-              const inProduction =
-                book.status?.toLowerCase().includes('in production') ||
-                book.status === 'IN_PRODUCTION' ||
-                book.status === 'DRAFT' ||
-                book.mrp == null;
-              const platforms = book.availableOn || book.platforms || [];
-              return (
-                <div key={book.id} className="card">
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <h3 className="font-semibold text-gray-900">{book.title}</h3>
-                      <p className="text-xs text-gray-500 font-mono mt-0.5">{book.isbn || '—'}</p>
-                    </div>
-                    {inProduction ? (
-                      <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
-                        {book.status || 'In Production'}
-                      </span>
-                    ) : (
-                      <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                        {book.status || 'Published & Live'}
-                      </span>
-                    )}
+            {books.map((book) => (
+              <div key={book.id} className="card">
+                <div className="flex items-start justify-between mb-3">
+                  <div>
+                    <h3 className="font-semibold text-gray-900">{book.title}</h3>
+                    <p className="text-xs text-gray-500 font-mono mt-0.5">{book.isbn}</p>
                   </div>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div>
-                      <p className="text-gray-400 text-xs">Genre</p>
-                      <p className="text-gray-700">{book.genre || '—'}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-400 text-xs">MRP</p>
-                      <p className="text-gray-700">{inProduction ? '—' : formatCurrency(book.mrp)}</p>
-                    </div>
-                    {!inProduction && (
-                      <>
-                        <div>
-                          <p className="text-gray-400 text-xs">Copies Sold</p>
-                          <p className="text-gray-700">
-                            {(book.totalCopiesSold ?? 0).toLocaleString('en-IN')}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-gray-400 text-xs">Royalty Earned</p>
-                          <p className="text-gray-700">{formatCurrency(book.totalRoyaltyEarned)}</p>
-                        </div>
-                        <div>
-                          <p className="text-gray-400 text-xs">Royalty Paid</p>
-                          <p className="text-gray-700">{formatCurrency(book.royaltyPaid)}</p>
-                        </div>
-                        <div>
-                          <p className="text-gray-400 text-xs">Pending</p>
-                          <p className="text-gray-700 font-medium">
-                            {formatCurrency(
-                              book.royaltyPending ??
-                                (book.totalRoyaltyEarned || 0) - (book.royaltyPaid || 0)
-                            )}
-                          </p>
-                        </div>
-                      </>
-                    )}
+                  <span
+                    className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${
+                      book.inProduction
+                        ? 'bg-amber-100 text-amber-700 border border-amber-200'
+                        : 'bg-green-100 text-green-700 border border-green-200'
+                    }`}
+                  >
+                    {book.statusLabel}
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div>
+                    <p className="text-gray-400 text-xs">Genre</p>
+                    <p className="text-gray-700">{book.genre}</p>
                   </div>
-                  {platforms.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-3 pt-3 border-t border-gray-100">
-                      {platforms.map((p) => (
-                        <span
-                          key={p}
-                          className="inline-flex items-center gap-0.5 px-2 py-0.5 bg-gray-100 text-gray-500 rounded text-[10px] font-medium"
-                        >
-                          <Globe className="h-2.5 w-2.5" />
-                          {p}
-                        </span>
-                      ))}
-                    </div>
+                  <div>
+                    <p className="text-gray-400 text-xs">MRP</p>
+                    <p className="text-gray-700">{book.displayMrp}</p>
+                  </div>
+                  {!book.inProduction && (
+                    <>
+                      <div>
+                        <p className="text-gray-400 text-xs">Copies Sold</p>
+                        <p className="text-gray-700">{book.displayCopiesSold}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-400 text-xs">Royalty Earned</p>
+                        <p className="text-gray-700">{book.displayRoyaltyEarned}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-400 text-xs">Royalty Paid</p>
+                        <p className="text-gray-700">{book.displayRoyaltyPaid}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-400 text-xs">Pending</p>
+                        <p className="text-gray-900 font-semibold">{book.displayRoyaltyPending}</p>
+                      </div>
+                    </>
                   )}
                 </div>
-              );
-            })}
+                {book.platforms.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-3 pt-3 border-t border-gray-100">
+                    {book.platforms.map((p) => (
+                      <span
+                        key={p}
+                        className="inline-flex items-center gap-0.5 px-2 py-0.5 bg-gray-100 text-gray-500 rounded text-[10px] font-medium"
+                      >
+                        <Globe className="h-2.5 w-2.5 text-gray-400" />
+                        {p}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </>
       )}

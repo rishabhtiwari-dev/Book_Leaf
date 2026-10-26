@@ -9,6 +9,7 @@ import {
 } from '../../api/client';
 import { useSocket } from '../../context/SocketContext';
 import { useAuth } from '../../context/AuthContext';
+import { formatTicketNumber, formatDate, formatCurrency } from '../../utils/formatters';
 import toast from 'react-hot-toast';
 
 export const STATUS_OPTIONS = ['OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED'];
@@ -22,9 +23,40 @@ export const CATEGORY_OPTIONS = [
 ];
 export const PRIORITY_OPTIONS = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'];
 
+function processAdminTicket(t, currentUserId) {
+  if (!t) return null;
+
+  const formattedResponses = (t.responses || []).map((resp) => ({
+    ...resp,
+    formattedDate: formatDate(resp.createdAt, 'MMM d, yyyy h:mm a'),
+  }));
+
+  const formattedNotes = (t.internalNotes || []).map((n) => ({
+    ...n,
+    formattedDate: formatDate(n.createdAt, 'MMM d, h:mm a'),
+  }));
+
+  const formattedBook = t.book
+    ? {
+        ...t.book,
+        formattedRoyaltyEarned: formatCurrency(t.book.totalRoyaltyEarned),
+        formattedRoyaltyPending: formatCurrency(t.book.royaltyPending),
+      }
+    : null;
+
+  return {
+    ...t,
+    formattedTicketNumber: formatTicketNumber(t),
+    formattedDate: formatDate(t.createdAt, 'MMM d, yyyy h:mm a'),
+    formattedResponses,
+    formattedNotes,
+    formattedBook,
+    isAssignedToCurrent: t.assignedToId === currentUserId,
+  };
+}
+
 /**
- * Custom hook managing operations ticket detail, AI draft generation,
- * status/category/priority overrides, responses, and internal notes.
+ * Pure Functional Hook: Operations Ticket Management, AI Generation, and Notes.
  */
 export function useAdminTicketDetail() {
   const { id } = useParams();
@@ -56,11 +88,12 @@ export function useAdminTicketDetail() {
   const fetchTicket = () => {
     getAdminTicket(id)
       .then((data) => {
-        const t = data.ticket;
-        setTicket(t);
-        setEditStatus(t.status || 'OPEN');
-        setEditCategory(t.category || '');
-        setEditPriority(t.priority || '');
+        const raw = data.ticket;
+        const processed = processAdminTicket(raw, user?.id);
+        setTicket(processed);
+        setEditStatus(raw.status || 'OPEN');
+        setEditCategory(raw.category || '');
+        setEditPriority(raw.priority || '');
       })
       .catch((err) => setError(err.response?.data?.message || 'Failed to load ticket'))
       .finally(() => setLoading(false));
@@ -68,7 +101,7 @@ export function useAdminTicketDetail() {
 
   useEffect(() => {
     fetchTicket();
-  }, [id]);
+  }, [id, user?.id]);
 
   // Real-time WebSocket updates
   useEffect(() => {

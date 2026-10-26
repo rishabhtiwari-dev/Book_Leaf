@@ -2,10 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { StatusBadge, PriorityBadge, CategoryBadge } from '../../components/Badges';
 import { Loader2, AlertCircle, Ticket, PlusCircle } from 'lucide-react';
-import { format } from 'date-fns';
 
 /**
- * Pure presentation / design component for Author My Tickets list.
+ * Pure Visual Design Component: Author My Tickets feed view.
  */
 export function MyTicketsView({ tickets, loading, error }) {
   if (loading) {
@@ -60,12 +59,12 @@ export function MyTicketsView({ tickets, loading, error }) {
               <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-mono text-gray-400">
-                      {ticket.ticketNumber || ticket.ticketNo || `TKT-${String(ticket.id).padStart(4, '0')}`}
+                    <span className="text-xs font-mono text-gray-400 font-bold">
+                      {ticket.formattedTicketNumber}
                     </span>
                     <StatusBadge status={ticket.status} />
                   </div>
-                  <h3 className="font-medium text-gray-900 truncate">{ticket.subject}</h3>
+                  <h3 className="font-semibold text-gray-900 truncate">{ticket.subject}</h3>
                   <div className="flex flex-wrap items-center gap-2 mt-2">
                     <PriorityBadge priority={ticket.priority} />
                     <CategoryBadge category={ticket.category} />
@@ -77,7 +76,7 @@ export function MyTicketsView({ tickets, loading, error }) {
                   </div>
                 </div>
                 <div className="text-xs text-gray-400 flex-shrink-0">
-                  {ticket.createdAt ? format(new Date(ticket.createdAt), 'MMM d, yyyy') : ''}
+                  {ticket.formattedDate}
                 </div>
               </div>
             </Link>

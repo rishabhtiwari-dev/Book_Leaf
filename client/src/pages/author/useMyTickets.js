@@ -1,10 +1,19 @@
 import { useState, useEffect } from 'react';
 import { getTickets } from '../../api/client';
 import { useSocket } from '../../context/SocketContext';
+import { formatTicketNumber, formatDate } from '../../utils/formatters';
 import toast from 'react-hot-toast';
 
+function processTicket(t) {
+  return {
+    ...t,
+    formattedTicketNumber: formatTicketNumber(t),
+    formattedDate: formatDate(t.createdAt, 'MMM d, yyyy'),
+  };
+}
+
 /**
- * Custom hook managing ticket list fetching and real-time WebSocket subscriptions for authors.
+ * Pure Functional Hook: Author Support Tickets State & Socket Events.
  */
 export function useMyTickets() {
   const [tickets, setTickets] = useState([]);
@@ -14,7 +23,10 @@ export function useMyTickets() {
 
   const fetchTickets = () => {
     getTickets()
-      .then((data) => setTickets(data.tickets || []))
+      .then((data) => {
+        const rawList = data.tickets || [];
+        setTickets(rawList.map(processTicket));
+      })
       .catch((err) => setError(err.response?.data?.message || 'Failed to load tickets'))
       .finally(() => setLoading(false));
   };
@@ -29,16 +41,17 @@ export function useMyTickets() {
 
     const handleUpdated = (data) => {
       setTickets((prev) =>
-        prev.map((t) => (t.id === data.id || t.id === data.ticketId ? { ...t, ...data } : t))
+        prev.map((t) =>
+          t.id === data.id || t.id === data.ticketId ? processTicket({ ...t, ...data }) : t
+        )
       );
-      const num = data.ticketNumber || data.ticketNo || '';
+      const num = formatTicketNumber(data);
       toast.success(`Ticket ${num} has been updated`);
     };
 
     const handleResponse = (data) => {
-      const num = data.ticketNumber || data.ticketNo || '';
+      const num = formatTicketNumber(data);
       toast.success(`Your ticket ${num} has a new response!`);
-      // Refresh to get latest data with new response
       fetchTickets();
     };
 
