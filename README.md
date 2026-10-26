@@ -248,3 +248,4 @@ Open your browser at:
 2. **Automated Auto-Responder**: High-confidence queries (e.g., standard metadata update inquiries or stock sync notices) could be resolved instantly via an automated bot with author opt-in before escalating to human agents.
 3. **Email Notification Pipeline**: Adding Nodemailer or SendGrid integration to notify authors via email whenever a ticket receives an admin reply.
 4. **Vector Search (RAG)**: For complex custom agreements or distributor-specific edge cases, embedding the entire author contract catalog using vector similarity search (pgvector) would further personalize AI drafts.
+

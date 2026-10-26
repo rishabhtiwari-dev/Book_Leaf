@@ -47,3 +47,4 @@ Given the opportunity to deploy this system at scale across BookLeaf's entire au
    Introduce an opt-in "Instant Resolution" agent for deterministic queries (e.g., triggering Amazon catalog inventory re-syncs, sharing quarterly royalty breakdown CSVs, or logging metadata update requests) that can resolve inquiries without human intervention while allowing 1-click human escalation.
 5. **Distributed Queue Architecture**:  
    Decouple incoming tickets and AI jobs using BullMQ/Redis worker queues to absorb traffic spikes during quarterly royalty release dates without throttling the primary web server.
+
