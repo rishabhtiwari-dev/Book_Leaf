@@ -1,0 +1,34 @@
+{
+  "name": "bookleaf-server",
+  "version": "1.0.0",
+  "description": "BookLeaf Author Support & Communication Portal - Backend",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "node src/index.js",
+    "start": "node src/index.js",
+    "seed": "node src/seed/index.js",
+    "test": "node test-server.js",
+    "db:push": "npx prisma db push",
+    "db:generate": "npx prisma generate"
+  },
+  "dependencies": {
+    "fastify": "^5.1.0",
+    "@fastify/cors": "^10.0.1",
+    "@fastify/jwt": "^9.0.1",
+    "@fastify/websocket": "^11.0.1",
+    "@fastify/swagger": "^9.4.2",
+    "@fastify/swagger-ui": "^5.2.1",
+    "@fastify/multipart": "^9.0.1",
+    "fastify-plugin": "^5.0.1",
+    "@prisma/client": "^6.1.0",
+    "bcryptjs": "^2.4.3",
+    "openai": "^4.77.0",
+    "socket.io": "^4.8.1",
+    "dotenv": "^16.4.7",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "prisma": "^6.1.0"
+  }
+}

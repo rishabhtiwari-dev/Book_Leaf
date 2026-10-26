@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String    @id @default(uuid())
+  email      String    @unique
+  password   String
+  name       String
+  role       String    @default("AUTHOR")
+  phone      String?
+  city       String?
+  authorId   String?   @unique
+  joinedDate DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  books           Book[]
+  tickets         Ticket[]
+  responses       TicketResponse[]
+  assignedTickets Ticket[]         @relation("AssignedTickets")
+  internalNotes   InternalNote[]
+}
+
+model Book {
+  id                    String    @id @default(uuid())
+  bookId                String    @unique
+  title                 String
+  isbn                  String
+  genre                 String
+  publicationDate       DateTime?
+  status                String
+  mrp                   Float?
+  authorRoyaltyPerCopy  Float?
+  totalCopiesSold       Int       @default(0)
+  totalRoyaltyEarned    Float     @default(0)
+  royaltyPaid           Float     @default(0)
+  royaltyPending        Float     @default(0)
+  lastRoyaltyPayoutDate DateTime?
+  printPartner          String?
+  availableOn           String    @default("[]")
+
+  userId  String
+  author  User     @relation(fields: [userId], references: [id])
+  tickets Ticket[]
+}
+
+model Ticket {
+  id           String  @id @default(uuid())
+  ticketNumber String  @unique
+  subject      String
+  description  String
+  category     String
+  priority     String
+  status       String  @default("OPEN")
+  aiCategory   String?
+  aiPriority   String?
+  attachmentUrl String?
+
+  userId       String
+  author       User   @relation(fields: [userId], references: [id])
+
+  bookId       String?
+  book         Book?  @relation(fields: [bookId], references: [id])
+
+  assignedToId String?
+  assignedTo   User?  @relation("AssignedTickets", fields: [assignedToId], references: [id])
+
+  responses     TicketResponse[]
+  internalNotes InternalNote[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TicketResponse {
+  id        String   @id @default(uuid())
+  content   String
+  isAiDraft Boolean  @default(false)
+  sentBy    String   @default("ADMIN")
+
+  ticketId String
+  ticket   Ticket @relation(fields: [ticketId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model InternalNote {
+  id      String @id @default(uuid())
+  content String
+
+  ticketId String
+  ticket   Ticket @relation(fields: [ticketId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model TicketCounter {
+  id    String @id @default("singleton")
+  count Int    @default(0)
+}
