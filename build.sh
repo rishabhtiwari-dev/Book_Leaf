@@ -18,3 +18,4 @@ node src/seed/index.js
 cd ..
 
 echo "✅ Build and seed completed successfully!"
+

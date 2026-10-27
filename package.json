@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "BookLeaf Publishing - Author Support & Communication Portal",
   "private": true,
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "start": "node server/src/index.js",
-    "build": "npm --prefix server install && npm --prefix client install && npm --prefix client run build && cd server && npx prisma generate && npx prisma db push && node src/seed/index.js",
-    "render-build": "bash build.sh",
+    "build": "npm --prefix server install && npm --prefix client install && npm --prefix client run build && npm --prefix server run db:generate && npm --prefix server run db:push && npm --prefix server run seed",
     "seed": "npm --prefix server run seed",
     "test": "npm --prefix server run test",
     "dev:server": "npm --prefix server run dev",
