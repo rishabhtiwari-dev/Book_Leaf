@@ -2,7 +2,9 @@
 
 A full-stack support and communication portal built for **BookLeaf Publishing** to help manage author communication at scale. The system includes two role-based interfaces — an **Author Portal** for authors to view their book catalog, royalties, and support queries, and an **Admin Operations Portal** for the BookLeaf team to triage incoming tickets with AI-assisted classification, priority scoring, and draft response generation.
 
-**Repository:** [https://github.com/rishabhtiwari-dev/Book_Leaf.git](https://github.com/rishabhtiwari-dev/Book_Leaf.git)
+- **Live Demo:** [https://book-leaf-katu.onrender.com](https://book-leaf-katu.onrender.com)
+- **API Documentation (Swagger):** [https://book-leaf-katu.onrender.com/api/docs](https://book-leaf-katu.onrender.com/api/docs)
+- **Repository:** [https://github.com/rishabhtiwari-dev/Book_Leaf.git](https://github.com/rishabhtiwari-dev/Book_Leaf.git)
 
 ---
 
