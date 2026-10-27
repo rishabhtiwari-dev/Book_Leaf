@@ -5,8 +5,8 @@
   "private": true,
   "scripts": {
     "start": "node server/src/index.js",
-    "build": "npm --prefix client run build",
-    "render-build": "npm --prefix server install && npm --prefix client install && npm --prefix client run build && cd server && npx prisma generate && npx prisma db push && node src/seed/index.js",
+    "build": "npm --prefix server install && npm --prefix client install && npm --prefix client run build && cd server && npx prisma generate && npx prisma db push && node src/seed/index.js",
+    "render-build": "bash build.sh",
     "seed": "npm --prefix server run seed",
     "test": "npm --prefix server run test",
     "dev:server": "npm --prefix server run dev",
