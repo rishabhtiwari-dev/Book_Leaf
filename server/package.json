@@ -9,8 +9,9 @@
     "start": "node src/index.js",
     "seed": "node src/seed/index.js",
     "test": "node test-server.js",
-    "db:push": "npx prisma db push",
-    "db:generate": "npx prisma generate"
+    "db:setup": "node src/db-setup.js",
+    "db:push": "node src/db-setup.js",
+    "db:generate": "node src/db-setup.js"
   },
   "dependencies": {
     "@fastify/cors": "^10.0.1",

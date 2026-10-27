@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node server/src/index.js",
-    "build": "npm --prefix server install && npm --prefix client install && npm --prefix client run build && npm --prefix server run db:generate && npm --prefix server run db:push && npm --prefix server run seed",
+    "build": "npm --prefix server install && npm --prefix client install && npm --prefix client run build && npm --prefix server run db:setup && npm --prefix server run seed",
     "seed": "npm --prefix server run seed",
     "test": "npm --prefix server run test",
     "dev:server": "npm --prefix server run dev",
