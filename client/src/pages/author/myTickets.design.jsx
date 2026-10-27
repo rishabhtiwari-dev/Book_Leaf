@@ -90,3 +90,4 @@ export function MyTicketsDesign({ tickets, hasTickets, loading, error }) {
 }
 
 export default MyTicketsDesign;
+

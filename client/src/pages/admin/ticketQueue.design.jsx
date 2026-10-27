@@ -200,3 +200,4 @@ export function TicketQueueDesign({
 }
 
 export default TicketQueueDesign;
+

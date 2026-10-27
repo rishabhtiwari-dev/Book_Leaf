@@ -63,3 +63,4 @@ export function useDashboardFunction() {
     refreshStats: fetchStats,
   };
 }
+

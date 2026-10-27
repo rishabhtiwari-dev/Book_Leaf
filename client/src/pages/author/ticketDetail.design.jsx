@@ -126,3 +126,4 @@ export function TicketDetailDesign({ ticket, loading, error }) {
 }
 
 export default TicketDetailDesign;
+
