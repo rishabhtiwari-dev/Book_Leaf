@@ -2,6 +2,10 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
+import fastifyStatic from '@fastify/static';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 
 // Load environment variables before anything else
@@ -16,13 +20,17 @@ import booksRoutes from './routes/books.routes.js';
 import ticketsRoutes from './routes/tickets.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const clientDistPath = path.resolve(__dirname, '../../client/dist');
+
 /**
  * Build and configure the Fastify application.
  */
 async function buildApp() {
   const fastify = Fastify({
     logger: {
-      level: 'info'
+      level: 'info',
     },
   });
 
@@ -37,14 +45,9 @@ async function buildApp() {
     });
   });
 
-  // --- CORS ---
+  // --- CORS (supports localhost in dev & deployed domains in production) ---
   await fastify.register(cors, {
-    origin: [
-      'http://localhost:5173',
-      'http://localhost:5174',
-      'http://localhost:3000',
-      'http://localhost:3001',
-    ],
+    origin: true,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -68,7 +71,7 @@ async function buildApp() {
         },
       },
       servers: [
-        { url: `http://localhost:${config.port}`, description: 'Development server' },
+        { url: `http://localhost:${config.port}`, description: 'Local server' },
       ],
     },
   });
@@ -98,12 +101,31 @@ async function buildApp() {
     uptime: process.uptime(),
   }));
 
-  // --- Root ---
-  fastify.get('/', async () => ({
-    name: 'BookLeaf Support Portal API',
-    version: '1.0.0',
-    docs: '/api/docs',
-  }));
+  // --- Static Frontend Serving (Production / Live Demo) ---
+  if (fs.existsSync(clientDistPath)) {
+    await fastify.register(fastifyStatic, {
+      root: clientDistPath,
+      prefix: '/',
+    });
+
+    fastify.setNotFoundHandler((request, reply) => {
+      if (request.url.startsWith('/api')) {
+        reply.status(404).send({
+          error: true,
+          message: 'API endpoint not found',
+          statusCode: 404,
+        });
+      } else {
+        reply.sendFile('index.html');
+      }
+    });
+  } else {
+    fastify.get('/', async () => ({
+      name: 'BookLeaf Support Portal API',
+      version: '1.0.0',
+      docs: '/api/docs',
+    }));
+  }
 
   return fastify;
 }
@@ -140,4 +162,9 @@ async function start() {
   }
 }
 
-start();
+export { buildApp, start };
+
+// Run start() only when executed directly as script
+if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(__filename)) {
+  start();
+}
